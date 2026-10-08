@@ -4,24 +4,24 @@
 export const DEFAULT_STATE = {
     personality: 'neutral',
     key: 'C',
-    scale: 'major',
-    bpm: 120,
+    scale: 'minor_natural',
+    bpm: 128,
     register: 'medium',
     bars: 8,
     
-    harmonyMode: 'off', 
-    bassMode: 'off', 
+    harmonyMode: 'auto', 
+    bassMode: 'rolling', 
     
     creativity: 50,
-    repetition: 50,
+    repetition: 60,
     complexity: 50,
     mutationIntensity: 50,
     
     volumeSynth: 80,
-    volumeBass: 40,
+    volumeBass: 50,
     synthEnabled: true,
     bassEnabled: true,
-    loop: false,
+    loop: true, // Crucial para eletrônica
 
     isGenerating: false,
     isPlaying: false,
