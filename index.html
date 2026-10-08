@@ -14,7 +14,7 @@
         
         <header class="app-header">
             <h1>Melody Lab</h1>
-            <span class="version">v0.1.0</span>
+            <span class="version">v0.2.0</span>
         </header>
 
         <aside class="sidebar-config">
@@ -29,6 +29,8 @@
                         <option value="D">Ré (D)</option>
                         <option value="A">Lá (A)</option>
                         <option value="E">Mi (E)</option>
+                        <option value="F">Fá (F)</option>
+                        <option value="Bb">Si Bemol (Bb)</option>
                     </select>
                 </div>
 
@@ -57,14 +59,37 @@
                 </div>
 
                 <div class="control-group">
+                    <label for="register-select">Registro</label>
+                    <select id="register-select">
+                        <option value="low">Baixo</option>
+                        <option value="medium" selected>Médio</option>
+                        <option value="high">Alto</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
                     <label for="creativity-input">Criatividade: <span id="creativity-value">50%</span></label>
                     <input type="range" id="creativity-input" min="0" max="100" value="50">
-                    <small class="help-text">Define a variação e saltos das notas.</small>
+                    <small class="help-text">Variação de intervalos e surpresas.</small>
+                </div>
+
+                <div class="control-group">
+                    <label for="repetition-input">Repetição: <span id="repetition-value">50%</span></label>
+                    <input type="range" id="repetition-input" min="0" max="100" value="50">
+                    <small class="help-text">Retorno de motivos anteriores.</small>
+                </div>
+
+                <div class="control-group">
+                    <label for="complexity-input">Complexidade: <span id="complexity-value">50%</span></label>
+                    <input type="range" id="complexity-input" min="0" max="100" value="50">
+                    <small class="help-text">Densidade rítmica e de notas.</small>
                 </div>
                 
                 <div class="control-group">
                     <label for="bars-select">Tamanho</label>
                     <select id="bars-select">
+                        <option value="1">1 Compasso</option>
+                        <option value="2">2 Compassos</option>
                         <option value="4">4 Compassos</option>
                         <option value="8" selected>8 Compassos</option>
                         <option value="16">16 Compassos</option>
@@ -82,7 +107,7 @@
             </div>
 
             <div class="piano-roll-container">
-                <div class="piano-roll-placeholder">
+                <div id="provisional-view" class="piano-roll-placeholder">
                     <span>Área reservada para o Piano Roll e visualização de notas MIDI</span>
                 </div>
             </div>
