@@ -2,7 +2,7 @@
 .app-container {
     display: grid;
     grid-template-columns: 300px 1fr;
-    grid-template-rows: 60px 1fr 80px;
+    grid-template-rows: 60px 1fr 100px; /* Rodapé ligeiramente maior para acomodar mixer */
     grid-template-areas: 
         "header header"
         "sidebar main"
