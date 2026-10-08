@@ -1,0 +1,60 @@
+/* Estrutura Principal de Grid */
+.app-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: 60px 1fr 80px;
+    grid-template-areas: 
+        "header header"
+        "sidebar main"
+        "footer footer";
+    height: 100vh;
+    width: 100vw;
+}
+
+.app-header {
+    grid-area: header;
+    background-color: var(--bg-panel);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--spacing-lg);
+}
+
+.app-header h1 {
+    font-size: 20px;
+    letter-spacing: 0.5px;
+}
+
+.app-header .version {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.sidebar-config {
+    grid-area: sidebar;
+    background-color: var(--bg-base);
+    border-right: 1px solid var(--border-color);
+    padding: var(--spacing-md);
+    overflow-y: auto;
+}
+
+.main-content {
+    grid-area: main;
+    background-color: var(--bg-base);
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    overflow-y: auto;
+}
+
+.bottom-bar {
+    grid-area: footer;
+    background-color: var(--bg-panel);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--spacing-lg);
+}
