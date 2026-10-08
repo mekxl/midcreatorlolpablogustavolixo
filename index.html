@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melody Lab</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/controls.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <header class="app-header">
+            <h1>Melody Lab</h1>
+            <span class="version">v0.1.0</span>
+        </header>
+
+        <aside class="sidebar-config">
+            <div class="panel-section">
+                <h2>Configurações</h2>
+                
+                <div class="control-group">
+                    <label for="key-select">Tonalidade</label>
+                    <select id="key-select">
+                        <option value="C">Dó (C)</option>
+                        <option value="G">Sol (G)</option>
+                        <option value="D">Ré (D)</option>
+                        <option value="A">Lá (A)</option>
+                        <option value="E">Mi (E)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="scale-select">Escala</label>
+                    <select id="scale-select">
+                        <option value="major">Maior</option>
+                        <option value="minor">Menor Natural</option>
+                        <option value="pentatonic_major">Pentatônica Maior</option>
+                        <option value="pentatonic_minor">Pentatônica Menor</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="bpm-input">Tempo (BPM): <span id="bpm-value">120</span></label>
+                    <input type="range" id="bpm-input" min="60" max="200" value="120">
+                </div>
+
+                <div class="control-group">
+                    <label for="creativity-input">Criatividade: <span id="creativity-value">50%</span></label>
+                    <input type="range" id="creativity-input" min="0" max="100" value="50">
+                    <small class="help-text">Define a variação e saltos das notas.</small>
+                </div>
+                
+                <div class="control-group">
+                    <label for="bars-select">Tamanho</label>
+                    <select id="bars-select">
+                        <option value="4">4 Compassos</option>
+                        <option value="8" selected>8 Compassos</option>
+                        <option value="16">16 Compassos</option>
+                    </select>
+                </div>
+
+                <button id="btn-generate" class="btn-primary">Gerar Melodia</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="info-panel">
+                <h2>Informações da Melodia</h2>
+                <p id="melody-status">Nenhuma melodia gerada no momento. Ajuste os parâmetros e clique em "Gerar Melodia".</p>
+            </div>
+
+            <div class="piano-roll-container">
+                <div class="piano-roll-placeholder">
+                    <span>Área reservada para o Piano Roll e visualização de notas MIDI</span>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bottom-bar">
+            <div class="transport-controls">
+                <button id="btn-play" class="btn-control" disabled>Reproduzir</button>
+                <button id="btn-stop" class="btn-control" disabled>Parar</button>
+            </div>
+            <div class="export-controls">
+                <button id="btn-export-midi" class="btn-secondary" disabled>Exportar MIDI</button>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Ponto de entrada do JavaScript -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
