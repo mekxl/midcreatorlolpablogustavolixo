@@ -1,0 +1,46 @@
+/* Painéis e Cards */
+.panel-section h2 {
+    font-size: 16px;
+    margin-bottom: var(--spacing-lg);
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+
+.info-panel {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+}
+
+.info-panel h2 {
+    font-size: 16px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.info-panel p {
+    color: var(--text-muted);
+}
+
+/* Piano Roll Placeholder */
+.piano-roll-container {
+    flex-grow: 1;
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    position: relative;
+    overflow: hidden;
+}
+
+.piano-roll-placeholder {
+    text-align: center;
+    color: var(--text-muted);
+    border: 2px dashed var(--border-color);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+}
