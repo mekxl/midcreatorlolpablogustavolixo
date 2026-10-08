@@ -1,6 +1,6 @@
 /**
  * Motor visual e interativo do Piano Roll utilizando HTML5 Canvas.
- * Permite visualização e edição direta dos dados musicais no estado global.
+ * Agora integrado nativamente ao fluxo do Histórico e Mutações.
  */
 import { appState } from '../core/state.js';
 import { audioEngine } from '../audio/audioEngine.js';
@@ -13,32 +13,26 @@ class PianoRoll {
         this.canvas = document.getElementById('pr-canvas');
         this.ctx = this.canvas.getContext('2d');
 
-        // Configurações da UI
         this.keyboardWidth = 60;
-        this.zoomX = 100; // pixels por tempo (beat)
-        this.zoomY = 20;  // pixels por semitom
-        this.snapBeats = 0.25; // Quantização padrão (1/16)
+        this.zoomX = 100; 
+        this.zoomY = 20;  
+        this.snapBeats = 0.25; 
         
-        // Estado Interno
         this.melodyData = null;
         this.scrollX = 0;
         this.scrollY = 0;
         this.selectedNoteIndex = -1;
         
-        // Controle de Arrastar/Redimensionar
-        this.dragState = 'none'; // 'none', 'move', 'resize'
+        this.dragState = 'none'; 
         this.dragStartX = 0;
         this.dragStartY = 0;
         this.dragOriginalNote = null;
 
-        // Binds
         this.initControls();
         this.initCanvasEvents();
         
-        // Observador de Redimensionamento do Viewport
         new ResizeObserver(() => this.resizeCanvas()).observe(this.viewport);
         
-        // Observa o scroll do viewport
         this.viewport.addEventListener('scroll', () => {
             this.scrollX = this.viewport.scrollLeft;
             this.scrollY = this.viewport.scrollTop;
@@ -51,14 +45,16 @@ class PianoRoll {
                 this.melodyData = state.melodyData;
                 if (needsRecalculate) {
                     this.updateSizer();
-                    this.centerScrollOnMelody();
+                    // Só centraliza automaticamente se não estivermos no meio de um drag (edição manual)
+                    if (this.dragState === 'none') {
+                        this.centerScrollOnMelody();
+                    }
                 }
             } else {
                 this.melodyData = null;
             }
         });
 
-        // Inicia o Loop de Renderização (60fps)
         this.renderLoop = this.renderLoop.bind(this);
         requestAnimationFrame(this.renderLoop);
     }
@@ -72,7 +68,6 @@ class PianoRoll {
         document.getElementById('btn-zoom-y-in').addEventListener('click', () => { this.zoomY = Math.min(40, this.zoomY + 4); this.updateSizer(); });
         document.getElementById('btn-zoom-y-out').addEventListener('click', () => { this.zoomY = Math.max(12, this.zoomY - 4); this.updateSizer(); });
 
-        // Atalhos de teclado
         document.addEventListener('keydown', (e) => {
             const tag = e.target.tagName;
             if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
@@ -91,7 +86,6 @@ class PianoRoll {
     }
 
     resizeCanvas() {
-        // Canvas assume exatamente o tamanho visível do viewport (Sticky Canvas Pattern)
         this.canvas.width = this.viewport.clientWidth;
         this.canvas.height = this.viewport.clientHeight;
     }
@@ -115,10 +109,8 @@ class PianoRoll {
         
         const targetY = ((127 - avgMidi) * this.zoomY) - (this.viewport.clientHeight / 2);
         this.viewport.scrollTop = Math.max(0, targetY);
-        this.viewport.scrollLeft = 0;
+        // Ocultado o reset de X para não frustrar o usuário quando ele altera notas longe do inicio
     }
-
-    // --- INTERAÇÕES ---
 
     getCoords(e) {
         const rect = this.canvas.getBoundingClientRect();
@@ -159,7 +151,6 @@ class PianoRoll {
         if (noteIdx !== -1) {
             const note = this.melodyData.notes[noteIdx];
             const noteEndX = (note.startTime + note.duration) * this.zoomX + this.keyboardWidth;
-            // Se estiver nos últimos 8 pixels da nota, cursor de resize
             if (mouseX + this.scrollX > noteEndX - 8) {
                 this.canvas.style.cursor = 'ew-resize';
             } else {
@@ -174,7 +165,6 @@ class PianoRoll {
         if (!this.melodyData) return;
         const { mouseX, beat, midi } = this.getCoords(e);
         
-        // Ignora clique no teclado
         if (mouseX < this.keyboardWidth) return;
 
         const noteIdx = this.getNoteAt(beat, midi);
@@ -194,20 +184,20 @@ class PianoRoll {
                 this.dragState = 'move';
             }
         } else {
-            // Criação de nova nota
+            // Nova nota
             const snappedBeat = Math.floor(beat / this.snapBeats) * this.snapBeats;
             const newNote = {
                 midi: midi,
                 noteName: midiToNote(midi).fullName,
                 octave: midiToNote(midi).octave,
                 startTime: snappedBeat,
-                duration: this.snapBeats * 4, // 1 tempo por padrão
+                duration: this.snapBeats * 4, 
                 velocity: 90,
                 isRest: false
             };
             this.melodyData.notes.push(newNote);
             this.selectedNoteIndex = this.melodyData.notes.length - 1;
-            this.commitChanges();
+            this.commitChanges(); // Empurra para o histórico
         }
     }
 
@@ -256,12 +246,9 @@ class PianoRoll {
     }
 
     commitChanges() {
-        // Envia os dados atualizados para o State Central.
-        // Isso fará o Audio e o Export trabalharem com a nova versão.
-        appState.set({ melodyData: this.melodyData });
+        // Envia modificações manuais do Piano Roll para o fluxo de histórico.
+        appState.pushHistory(this.melodyData);
     }
-
-    // --- RENDERIZAÇÃO ---
 
     isBlackKey(midi) {
         const noteClass = midi % 12;
@@ -274,7 +261,6 @@ class PianoRoll {
         
         this.ctx.clearRect(0, 0, w, h);
         
-        // Fundo principal
         this.ctx.fillStyle = '#1e1e1e';
         this.ctx.fillRect(0, 0, w, h);
 
@@ -282,24 +268,20 @@ class PianoRoll {
             this.ctx.fillStyle = '#9e9e9e';
             this.ctx.font = '14px sans-serif';
             this.ctx.textAlign = 'center';
-            this.ctx.fillText('Gere uma melodia para visualizar o Piano Roll', w/2, h/2);
+            this.ctx.fillText('Gere uma melodia base para visualizar o Piano Roll', w/2, h/2);
             requestAnimationFrame(this.renderLoop);
             return;
         }
 
         this.ctx.save();
-        
-        // Move contexto baseado no scroll (para o grid e notas)
         this.ctx.translate(-this.scrollX, -this.scrollY);
 
-        // 1. GRID
+        // GRID
         const totalBeats = this.melodyData.bars * 4;
         
-        // Linhas Horizontais (Notas)
         this.ctx.beginPath();
         for (let i = 0; i <= 128; i++) {
             const y = i * this.zoomY;
-            // Apenas desenha se estiver visível
             if (y >= this.scrollY && y <= this.scrollY + h) {
                 const isBlack = this.isBlackKey(127 - i);
                 this.ctx.fillStyle = isBlack ? '#151515' : '#1e1e1e';
@@ -311,7 +293,6 @@ class PianoRoll {
         this.ctx.strokeStyle = '#2a2a2a';
         this.ctx.stroke();
 
-        // Linhas Verticais (Tempo)
         this.ctx.beginPath();
         for (let b = 0; b <= totalBeats; b += this.snapBeats) {
             const x = this.keyboardWidth + (b * this.zoomX);
@@ -323,7 +304,6 @@ class PianoRoll {
         this.ctx.strokeStyle = '#333';
         this.ctx.stroke();
         
-        // Linhas de Compasso e Tempos Principais
         this.ctx.beginPath();
         for (let b = 0; b <= totalBeats; b++) {
             const x = this.keyboardWidth + (b * this.zoomX);
@@ -335,7 +315,7 @@ class PianoRoll {
         this.ctx.strokeStyle = '#555';
         this.ctx.stroke();
 
-        // 2. NOTAS
+        // NOTAS
         this.melodyData.notes.forEach((note, index) => {
             if (note.isRest) return;
             
@@ -344,10 +324,7 @@ class PianoRoll {
             const width = note.duration * this.zoomX;
             const height = this.zoomY;
             
-            // Desenha apenas se estiver na área visível
             if (x + width > this.scrollX && x < this.scrollX + w && y + height > this.scrollY && y < this.scrollY + h) {
-                
-                // Simulação de velocity na cor
                 const alpha = 0.5 + (note.velocity / 127) * 0.5;
                 
                 if (index === this.selectedNoteIndex) {
@@ -365,7 +342,7 @@ class PianoRoll {
             }
         });
 
-        // 3. PLAYHEAD
+        // PLAYHEAD
         const currentBeat = audioEngine.getCurrentBeat();
         const playheadX = this.keyboardWidth + (currentBeat * this.zoomX);
         
@@ -380,7 +357,7 @@ class PianoRoll {
 
         this.ctx.restore();
 
-        // 4. TECLADO (Fixo na esquerda, rola apenas no Y)
+        // TECLADO
         this.ctx.save();
         this.ctx.translate(0, -this.scrollY);
         
@@ -395,7 +372,6 @@ class PianoRoll {
                 this.ctx.strokeStyle = '#333';
                 this.ctx.strokeRect(0, y, this.keyboardWidth, this.zoomY);
 
-                // Mostra o nome apenas na nota C, se houver espaço
                 if (midi % 12 === 0 && this.zoomY >= 14) {
                     this.ctx.fillStyle = '#121212';
                     this.ctx.font = '10px sans-serif';
