@@ -1,12 +1,10 @@
 /**
- * Responsável por gerenciar os inputs de configuração base, personalidades
- * e manter a sincronia com o state central.
+ * UI Binds para as Configurações de Geração e Harmonia.
  */
 import { appState } from '../core/state.js';
 import { PERSONALITIES } from '../melody/personalityProfiles.js';
 
 export function initGeneratorUI() {
-    // Configurações Base
     const personalitySelect = document.getElementById('personality-select');
     const personalityDesc = document.getElementById('personality-desc');
     const keySelect = document.getElementById('key-select');
@@ -16,7 +14,9 @@ export function initGeneratorUI() {
     const registerSelect = document.getElementById('register-select');
     const barsSelect = document.getElementById('bars-select');
     
-    // Configurações Deslizantes
+    const harmonyModeSelect = document.getElementById('harmony-mode');
+    const bassModeSelect = document.getElementById('bass-mode');
+    
     const creativityInput = document.getElementById('creativity-input');
     const creativityValue = document.getElementById('creativity-value');
     const repetitionInput = document.getElementById('repetition-input');
@@ -24,21 +24,20 @@ export function initGeneratorUI() {
     const complexityInput = document.getElementById('complexity-input');
     const complexityValue = document.getElementById('complexity-value');
     
-    // Configurações de Mutação
     const mutationIntensity = document.getElementById('mutation-intensity');
     const mutationIntensityValue = document.getElementById('mutation-intensity-value');
 
     const initialState = appState.get();
     
-    // Inicialização Visual
     personalitySelect.value = initialState.personality;
     personalityDesc.textContent = PERSONALITIES[initialState.personality].description;
     keySelect.value = initialState.key;
     scaleSelect.value = initialState.scale;
     bpmInput.value = initialState.bpm;
     bpmValueDisplay.textContent = initialState.bpm;
-    registerSelect.value = initialState.register;
     barsSelect.value = initialState.bars;
+    harmonyModeSelect.value = initialState.harmonyMode;
+    bassModeSelect.value = initialState.bassMode;
     
     creativityInput.value = initialState.creativity;
     creativityValue.textContent = initialState.creativity + '%';
@@ -46,11 +45,10 @@ export function initGeneratorUI() {
     repetitionValue.textContent = initialState.repetition + '%';
     complexityInput.value = initialState.complexity;
     complexityValue.textContent = initialState.complexity + '%';
-    
     mutationIntensity.value = initialState.mutationIntensity;
     mutationIntensityValue.textContent = initialState.mutationIntensity + '%';
 
-    // Listeners Base
+    // Binds
     personalitySelect.addEventListener('change', (e) => {
         const val = e.target.value;
         appState.set({ personality: val });
@@ -58,8 +56,9 @@ export function initGeneratorUI() {
     });
     keySelect.addEventListener('change', (e) => appState.set({ key: e.target.value }));
     scaleSelect.addEventListener('change', (e) => appState.set({ scale: e.target.value }));
-    registerSelect.addEventListener('change', (e) => appState.set({ register: e.target.value }));
     barsSelect.addEventListener('change', (e) => appState.set({ bars: parseInt(e.target.value, 10) }));
+    harmonyModeSelect.addEventListener('change', (e) => appState.set({ harmonyMode: e.target.value }));
+    bassModeSelect.addEventListener('change', (e) => appState.set({ bassMode: e.target.value }));
 
     bpmInput.addEventListener('input', (e) => {
         const val = parseInt(e.target.value, 10);
