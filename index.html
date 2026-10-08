@@ -14,13 +14,28 @@
         
         <header class="app-header">
             <h1>Melody Lab</h1>
-            <span class="version">v0.5.0</span>
+            <span class="version">v0.6.0</span>
         </header>
 
         <aside class="sidebar-config">
             <div class="panel-section">
                 <h2>Configurações</h2>
                 
+                <div class="control-group">
+                    <label for="personality-select">Personalidade</label>
+                    <select id="personality-select">
+                        <option value="neutral">Neutra</option>
+                        <option value="dark">Dark</option>
+                        <option value="emotional">Emocional</option>
+                        <option value="catchy">Catchy</option>
+                        <option value="energetic">Energética</option>
+                        <option value="experimental">Experimental</option>
+                        <option value="cinematic">Cinemática</option>
+                        <option value="minimalist">Minimalista</option>
+                    </select>
+                    <small id="personality-desc" class="help-text">Comportamento equilibrado. Balanceia repetição, variação e tensão de forma neutra.</small>
+                </div>
+
                 <div class="control-group">
                     <label for="key-select">Tonalidade</label>
                     <select id="key-select">
@@ -67,6 +82,21 @@
                     </select>
                 </div>
 
+                <div class="control-group">
+                    <label for="creativity-input">Criatividade: <span id="creativity-value">50%</span></label>
+                    <input type="range" id="creativity-input" min="0" max="100" value="50">
+                </div>
+
+                <div class="control-group">
+                    <label for="repetition-input">Repetição: <span id="repetition-value">50%</span></label>
+                    <input type="range" id="repetition-input" min="0" max="100" value="50">
+                </div>
+
+                <div class="control-group">
+                    <label for="complexity-input">Complexidade: <span id="complexity-value">50%</span></label>
+                    <input type="range" id="complexity-input" min="0" max="100" value="50">
+                </div>
+                
                 <div class="control-group">
                     <label for="bars-select">Tamanho</label>
                     <select id="bars-select">
