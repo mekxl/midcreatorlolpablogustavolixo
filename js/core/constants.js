@@ -4,13 +4,17 @@
  */
 
 export const DEFAULT_STATE = {
+    personality: 'neutral',
     key: 'C',
     scale: 'major',
     bpm: 120,
     register: 'medium',
     bars: 8,
     
-    // Parâmetros de Mutação
+    // Parâmetros de Geração e Mutação
+    creativity: 50,
+    repetition: 50,
+    complexity: 50,
     mutationIntensity: 50,
     
     // Controles de Áudio
