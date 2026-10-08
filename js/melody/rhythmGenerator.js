@@ -1,6 +1,5 @@
 /**
- * Gerador procedural de ritmos musicais.
- * Agora utiliza os vieses da Personalidade para guiar a densidade e o silêncio.
+ * Gerador procedural de ritmos musicais focado em Groove Eletrônico.
  */
 import { getPersonality } from './personalityProfiles.js';
 
@@ -12,27 +11,24 @@ const DURATIONS = {
     SIXTEENTH: 0.25
 };
 
-/**
- * Gera um padrão rítmico de 1 compasso (4 tempos) baseado na complexidade e personalidade.
- */
 export function generateRhythmBar(settings, prng) {
     const profile = getPersonality(settings.personality);
-    
-    // Aplica o viés de densidade da personalidade na complexidade base
     const effectiveComplexity = Math.max(0, Math.min(100, settings.complexity * profile.biases.density));
     
     let remainingTime = 4.0;
     const rhythm = [];
 
     let possibleDurations = [DURATIONS.WHOLE, DURATIONS.HALF, DURATIONS.QUARTER, DURATIONS.EIGHTH];
-    if (effectiveComplexity > 70) possibleDurations.push(DURATIONS.SIXTEENTH);
+    if (effectiveComplexity > 60) possibleDurations.push(DURATIONS.SIXTEENTH);
     
     let weights = possibleDurations.map(d => {
-        if (d >= 2.0) return Math.max(10, 100 - effectiveComplexity);
-        if (d === 1.0) return 50;
-        if (d <= 0.5) return Math.max(10, effectiveComplexity);
+        if (d >= 2.0) return Math.max(5, 100 - effectiveComplexity);
+        if (d === 1.0) return 40;
+        if (d <= 0.5) return Math.max(20, effectiveComplexity);
         return 10;
     });
+
+    let currentBeatPosition = 0; // Para calcular síncope no groove eletrônico
 
     while (remainingTime > 0) {
         const validIndices = possibleDurations
@@ -41,21 +37,36 @@ export function generateRhythmBar(settings, prng) {
             
         if (validIndices.length === 0) break; 
 
-        const validDurations = validIndices.map(i => possibleDurations[i]);
-        const validWeights = validIndices.map(i => weights[i]);
+        let validDurations = validIndices.map(i => possibleDurations[i]);
+        let validWeights = validIndices.map(i => weights[i]);
+
+        // Heurística de Síncope/Groove: Se for contratempo, aumenta chance de notas curtas
+        const isOffbeat = (currentBeatPosition % 1) !== 0;
+        if (isOffbeat && validDurations.includes(DURATIONS.SIXTEENTH)) {
+            const idx16 = validDurations.indexOf(DURATIONS.SIXTEENTH);
+            validWeights[idx16] *= 1.5; 
+        }
 
         const selectedDuration = prng.weightedChoice(validDurations, validWeights);
         
-        // Pausas sofrem influência dupla: complexidade (do usuário) e viés (da personalidade)
-        const restProb = (effectiveComplexity * 0.3) * profile.biases.rest;
-        const isRest = prng.nextFloat() * 100 < restProb;
+        // Pausas formam o groove da música eletrônica
+        const restProb = (Math.max(10, 100 - effectiveComplexity) * 0.4) * profile.biases.rest;
+        // Evita pausar no primeiro beat do compasso na maioria das vezes, a não ser em estilos experimentais
+        let isRest = false;
+        if (currentBeatPosition === 0 && profile.name !== "IDM / Experimental") {
+            isRest = prng.nextFloat() * 100 < (restProb * 0.2); 
+        } else {
+            isRest = prng.nextFloat() * 100 < restProb;
+        }
 
         rhythm.push({
             duration: selectedDuration,
-            isRest: isRest
+            isRest: isRest,
+            _beatPos: currentBeatPosition
         });
 
         remainingTime -= selectedDuration;
+        currentBeatPosition += selectedDuration;
     }
 
     return rhythm;
