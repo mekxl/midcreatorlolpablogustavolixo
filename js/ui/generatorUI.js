@@ -5,7 +5,7 @@ import { appState } from '../core/state.js';
 import { PERSONALITIES } from '../melody/personalityProfiles.js';
 import { StorageManager } from '../core/storageManager.js';
 import { showNotification } from './notifications.js';
-import { requestNamePrompt } from './controls.js'; // Helper importado para o modal de nome
+import { requestNamePrompt } from './controls.js'; 
 
 export function initGeneratorUI() {
     const uiElements = {
@@ -27,7 +27,6 @@ export function initGeneratorUI() {
         presetSelect: document.getElementById('preset-select')
     };
 
-    // Sincroniza a UI quando o estado for alterado programaticamente (Ex: Carregou Preset)
     appState.subscribe(state => {
         uiElements.personality.value = state.personality;
         document.getElementById('personality-desc').textContent = PERSONALITIES[state.personality].description;
@@ -48,7 +47,6 @@ export function initGeneratorUI() {
         uiElements.complexityVal.textContent = state.complexity;
     });
 
-    // Event Listeners Base
     uiElements.personality.addEventListener('change', e => appState.set({ personality: e.target.value }));
     uiElements.key.addEventListener('change', e => appState.set({ key: e.target.value }));
     uiElements.scale.addEventListener('change', e => appState.set({ scale: e.target.value }));
@@ -68,7 +66,6 @@ export function initGeneratorUI() {
         appState.set({ mutationIntensity: parseInt(e.target.value, 10) });
     });
 
-    // Lógica de Presets
     const loadPresetsUI = () => {
         const presets = StorageManager.getPresets();
         uiElements.presetSelect.innerHTML = '<option value="" disabled selected>Carregar preset...</option>';
@@ -87,7 +84,7 @@ export function initGeneratorUI() {
             appState.set(selected.settings);
             showNotification(`Preset "${selected.name}" carregado.`, 'success');
         }
-        uiElements.presetSelect.value = ""; // Reseta seleção para agir como botão
+        uiElements.presetSelect.value = ""; 
     });
 
     document.getElementById('btn-save-preset').addEventListener('click', () => {
@@ -99,10 +96,7 @@ export function initGeneratorUI() {
     });
 
     document.getElementById('btn-delete-preset').addEventListener('click', () => {
-        // Exclui o último selecionado se existir, requer interface robusta, 
-        // Simplificação: prompt native para ID ou construir modal avançado. 
-        // Vamos usar um confirm simples baseado no valor atual? Como o select reseta, não há valor atual.
-        showNotification("Para manter a fluidez, a edição de presets será feita pela Biblioteca.", "info");
+        showNotification("O gerenciamento de presets será movido para a Biblioteca no futuro.", "info");
     });
 
     loadPresetsUI();
