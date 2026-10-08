@@ -19,15 +19,5 @@ O Melody Lab não é um gerador acadêmico genérico. Ele é uma ferramenta cria
 - **Canvas API** para altíssimo desempenho a 60 FPS no Piano Roll.
 - **Nenhum Backend**: Roda totalmente no navegador. Sem dependências NPM, sem necessidade de banco de dados.
 
-## Como Executar
-1. Clone o repositório.
-2. Como o projeto utiliza módulos ES6, você precisa servir os arquivos para evitar bloqueios de CORS do navegador local. 
-   Usando Python 3: `python -m http.server 8000`
-   Usando VS Code: Extensão "Live Server".
-3. Acesse `http://localhost:8000`.
+Toma no cu, Gustavo.
 
-## Publicação no GitHub Pages
-O projeto foi construído para funcionar estaticamente. Basta subir para a branch `main` de um repositório no GitHub, ir em `Settings > Pages`, selecionar a branch e `/root`, e seu Melody Lab estará online.
-
----
-*Fase Final 10: Polimento visual, UX profissional, Loopability e filtros Classic Synth implementados.*
