@@ -9,8 +9,8 @@ export const DEFAULT_STATE = {
     register: 'medium',
     bars: 8,
     
-    harmonyMode: 'auto', 
-    bassMode: 'bassline', 
+    harmonyMode: 'off', 
+    bassMode: 'off', 
     
     creativity: 50,
     repetition: 50,
