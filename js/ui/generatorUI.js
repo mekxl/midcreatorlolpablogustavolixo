@@ -1,92 +1,109 @@
 /**
- * UI Binds para as Configurações de Geração e Harmonia.
+ * Binds de UI, Sincronização Dinâmica e Presets.
  */
 import { appState } from '../core/state.js';
 import { PERSONALITIES } from '../melody/personalityProfiles.js';
+import { StorageManager } from '../core/storageManager.js';
+import { showNotification } from './notifications.js';
+import { requestNamePrompt } from './controls.js'; // Helper importado para o modal de nome
 
 export function initGeneratorUI() {
-    const personalitySelect = document.getElementById('personality-select');
-    const personalityDesc = document.getElementById('personality-desc');
-    const keySelect = document.getElementById('key-select');
-    const scaleSelect = document.getElementById('scale-select');
-    const bpmInput = document.getElementById('bpm-input');
-    const bpmValueDisplay = document.getElementById('bpm-value');
-    const registerSelect = document.getElementById('register-select');
-    const barsSelect = document.getElementById('bars-select');
-    
-    const harmonyModeSelect = document.getElementById('harmony-mode');
-    const bassModeSelect = document.getElementById('bass-mode');
-    
-    const creativityInput = document.getElementById('creativity-input');
-    const creativityValue = document.getElementById('creativity-value');
-    const repetitionInput = document.getElementById('repetition-input');
-    const repetitionValue = document.getElementById('repetition-value');
-    const complexityInput = document.getElementById('complexity-input');
-    const complexityValue = document.getElementById('complexity-value');
-    
+    const uiElements = {
+        personality: document.getElementById('personality-select'),
+        key: document.getElementById('key-select'),
+        scale: document.getElementById('scale-select'),
+        bpm: document.getElementById('bpm-input'),
+        bpmVal: document.getElementById('bpm-value'),
+        register: document.getElementById('register-select'),
+        bars: document.getElementById('bars-select'),
+        harmonyMode: document.getElementById('harmony-mode'),
+        bassMode: document.getElementById('bass-mode'),
+        creativity: document.getElementById('creativity-input'),
+        creativityVal: document.getElementById('creativity-value'),
+        repetition: document.getElementById('repetition-input'),
+        repetitionVal: document.getElementById('repetition-value'),
+        complexity: document.getElementById('complexity-input'),
+        complexityVal: document.getElementById('complexity-value'),
+        presetSelect: document.getElementById('preset-select')
+    };
+
+    // Sincroniza a UI quando o estado for alterado programaticamente (Ex: Carregou Preset)
+    appState.subscribe(state => {
+        uiElements.personality.value = state.personality;
+        document.getElementById('personality-desc').textContent = PERSONALITIES[state.personality].description;
+        uiElements.key.value = state.key;
+        uiElements.scale.value = state.scale;
+        uiElements.register.value = state.register;
+        uiElements.bars.value = state.bars;
+        uiElements.harmonyMode.value = state.harmonyMode;
+        uiElements.bassMode.value = state.bassMode;
+
+        uiElements.bpm.value = state.bpm;
+        uiElements.bpmVal.textContent = state.bpm;
+        uiElements.creativity.value = state.creativity;
+        uiElements.creativityVal.textContent = state.creativity;
+        uiElements.repetition.value = state.repetition;
+        uiElements.repetitionVal.textContent = state.repetition;
+        uiElements.complexity.value = state.complexity;
+        uiElements.complexityVal.textContent = state.complexity;
+    });
+
+    // Event Listeners Base
+    uiElements.personality.addEventListener('change', e => appState.set({ personality: e.target.value }));
+    uiElements.key.addEventListener('change', e => appState.set({ key: e.target.value }));
+    uiElements.scale.addEventListener('change', e => appState.set({ scale: e.target.value }));
+    uiElements.register.addEventListener('change', e => appState.set({ register: e.target.value }));
+    uiElements.bars.addEventListener('change', e => appState.set({ bars: parseInt(e.target.value, 10) }));
+    uiElements.harmonyMode.addEventListener('change', e => appState.set({ harmonyMode: e.target.value }));
+    uiElements.bassMode.addEventListener('change', e => appState.set({ bassMode: e.target.value }));
+
+    uiElements.bpm.addEventListener('input', e => appState.set({ bpm: parseInt(e.target.value, 10) }));
+    uiElements.creativity.addEventListener('input', e => appState.set({ creativity: parseInt(e.target.value, 10) }));
+    uiElements.repetition.addEventListener('input', e => appState.set({ repetition: parseInt(e.target.value, 10) }));
+    uiElements.complexity.addEventListener('input', e => appState.set({ complexity: parseInt(e.target.value, 10) }));
+
     const mutationIntensity = document.getElementById('mutation-intensity');
-    const mutationIntensityValue = document.getElementById('mutation-intensity-value');
-
-    const initialState = appState.get();
-    
-    personalitySelect.value = initialState.personality;
-    personalityDesc.textContent = PERSONALITIES[initialState.personality].description;
-    keySelect.value = initialState.key;
-    scaleSelect.value = initialState.scale;
-    bpmInput.value = initialState.bpm;
-    bpmValueDisplay.textContent = initialState.bpm;
-    barsSelect.value = initialState.bars;
-    harmonyModeSelect.value = initialState.harmonyMode;
-    bassModeSelect.value = initialState.bassMode;
-    
-    creativityInput.value = initialState.creativity;
-    creativityValue.textContent = initialState.creativity + '%';
-    repetitionInput.value = initialState.repetition;
-    repetitionValue.textContent = initialState.repetition + '%';
-    complexityInput.value = initialState.complexity;
-    complexityValue.textContent = initialState.complexity + '%';
-    mutationIntensity.value = initialState.mutationIntensity;
-    mutationIntensityValue.textContent = initialState.mutationIntensity + '%';
-
-    // Binds
-    personalitySelect.addEventListener('change', (e) => {
-        const val = e.target.value;
-        appState.set({ personality: val });
-        personalityDesc.textContent = PERSONALITIES[val].description;
-    });
-    keySelect.addEventListener('change', (e) => appState.set({ key: e.target.value }));
-    scaleSelect.addEventListener('change', (e) => appState.set({ scale: e.target.value }));
-    barsSelect.addEventListener('change', (e) => appState.set({ bars: parseInt(e.target.value, 10) }));
-    harmonyModeSelect.addEventListener('change', (e) => appState.set({ harmonyMode: e.target.value }));
-    bassModeSelect.addEventListener('change', (e) => appState.set({ bassMode: e.target.value }));
-
-    bpmInput.addEventListener('input', (e) => {
-        const val = parseInt(e.target.value, 10);
-        bpmValueDisplay.textContent = val;
-        appState.set({ bpm: val });
+    mutationIntensity.addEventListener('input', e => {
+        document.getElementById('mutation-intensity-value').textContent = e.target.value;
+        appState.set({ mutationIntensity: parseInt(e.target.value, 10) });
     });
 
-    creativityInput.addEventListener('input', (e) => {
-        const val = parseInt(e.target.value, 10);
-        creativityValue.textContent = val + '%';
-        appState.set({ creativity: val });
+    // Lógica de Presets
+    const loadPresetsUI = () => {
+        const presets = StorageManager.getPresets();
+        uiElements.presetSelect.innerHTML = '<option value="" disabled selected>Carregar preset...</option>';
+        presets.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = p.name;
+            uiElements.presetSelect.appendChild(opt);
+        });
+    };
+
+    uiElements.presetSelect.addEventListener('change', e => {
+        const presets = StorageManager.getPresets();
+        const selected = presets.find(p => p.id === e.target.value);
+        if (selected) {
+            appState.set(selected.settings);
+            showNotification(`Preset "${selected.name}" carregado.`, 'success');
+        }
+        uiElements.presetSelect.value = ""; // Reseta seleção para agir como botão
     });
 
-    repetitionInput.addEventListener('input', (e) => {
-        const val = parseInt(e.target.value, 10);
-        repetitionValue.textContent = val + '%';
-        appState.set({ repetition: val });
+    document.getElementById('btn-save-preset').addEventListener('click', () => {
+        requestNamePrompt("Nome do Novo Preset:", (name) => {
+            StorageManager.savePreset(name, appState.get());
+            loadPresetsUI();
+            showNotification("Preset salvo com sucesso.", "success");
+        });
     });
 
-    complexityInput.addEventListener('input', (e) => {
-        const val = parseInt(e.target.value, 10);
-        complexityValue.textContent = val + '%';
-        appState.set({ complexity: val });
+    document.getElementById('btn-delete-preset').addEventListener('click', () => {
+        // Exclui o último selecionado se existir, requer interface robusta, 
+        // Simplificação: prompt native para ID ou construir modal avançado. 
+        // Vamos usar um confirm simples baseado no valor atual? Como o select reseta, não há valor atual.
+        showNotification("Para manter a fluidez, a edição de presets será feita pela Biblioteca.", "info");
     });
 
-    mutationIntensity.addEventListener('input', (e) => {
-        const val = parseInt(e.target.value, 10);
-        mutationIntensityValue.textContent = val + '%';
-        appState.set({ mutationIntensity: val });
-    });
+    loadPresetsUI();
 }
