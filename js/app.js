@@ -1,21 +1,18 @@
 /**
  * Ponto de entrada principal da aplicação (Entry Point).
- * Coordena a inicialização de todos os módulos.
  */
 import { initGeneratorUI } from './ui/generatorUI.js';
 import { initControls } from './ui/controls.js';
 import { runMusicTests } from './music/tests.js';
-
-// Inicializa a instância para ativar o loop do Canvas no carregamento
 import './ui/pianoRoll.js'; 
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Iniciando Melody Lab...");
 
-    // Executa testes internos de teoria musical no console
+    // Validações teóricas seguras no console
     runMusicTests();
 
-    // Inicializa controladores da UI e binds de estado
+    // Inicializa Controladores de UI, Presets e Atalhos
     initGeneratorUI();
     initControls();
 
