@@ -1,8 +1,8 @@
 /* Estrutura Principal de Grid */
 .app-container {
     display: grid;
-    grid-template-columns: 300px 1fr;
-    grid-template-rows: 60px 1fr 100px; /* Rodapé ligeiramente maior para acomodar mixer */
+    grid-template-columns: 320px 1fr;
+    grid-template-rows: 60px 1fr 90px;
     grid-template-areas: 
         "header header"
         "sidebar main"
@@ -31,12 +31,30 @@
     font-size: 12px;
 }
 
+/* Sidebar com Área Fixa de Ação (Gerar) */
 .sidebar-config {
     grid-area: sidebar;
     background-color: var(--bg-base);
     border-right: 1px solid var(--border-color);
-    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sidebar-scrollable {
+    flex-grow: 1;
     overflow-y: auto;
+    padding: var(--spacing-md);
+}
+
+.sidebar-footer {
+    flex-shrink: 0;
+    padding: var(--spacing-md);
+    background-color: var(--bg-panel);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
 }
 
 .main-content {
@@ -57,4 +75,26 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 var(--spacing-lg);
+}
+
+/* Responsividade Básica */
+@media (max-width: 900px) {
+    .app-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: 60px auto 1fr auto;
+        grid-template-areas: 
+            "header"
+            "sidebar"
+            "main"
+            "footer";
+    }
+    .sidebar-config {
+        max-height: 40vh;
+    }
+    .bottom-bar {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        padding: var(--spacing-sm);
+        height: auto;
+    }
 }
