@@ -14,12 +14,12 @@
         
         <header class="app-header">
             <h1>Melody Lab</h1>
-            <span class="version">v0.6.0</span>
+            <span class="version">v0.7.0</span>
         </header>
 
         <aside class="sidebar-config">
             <div class="panel-section">
-                <h2>Configurações</h2>
+                <h2>Configurações Base</h2>
                 
                 <div class="control-group">
                     <label for="personality-select">Personalidade</label>
@@ -33,7 +33,7 @@
                         <option value="cinematic">Cinemática</option>
                         <option value="minimalist">Minimalista</option>
                     </select>
-                    <small id="personality-desc" class="help-text">Comportamento equilibrado. Balanceia repetição, variação e tensão de forma neutra.</small>
+                    <small id="personality-desc" class="help-text">Comportamento equilibrado.</small>
                 </div>
 
                 <div class="control-group">
@@ -74,30 +74,6 @@
                 </div>
 
                 <div class="control-group">
-                    <label for="register-select">Registro</label>
-                    <select id="register-select">
-                        <option value="low">Baixo</option>
-                        <option value="medium" selected>Médio</option>
-                        <option value="high">Alto</option>
-                    </select>
-                </div>
-
-                <div class="control-group">
-                    <label for="creativity-input">Criatividade: <span id="creativity-value">50%</span></label>
-                    <input type="range" id="creativity-input" min="0" max="100" value="50">
-                </div>
-
-                <div class="control-group">
-                    <label for="repetition-input">Repetição: <span id="repetition-value">50%</span></label>
-                    <input type="range" id="repetition-input" min="0" max="100" value="50">
-                </div>
-
-                <div class="control-group">
-                    <label for="complexity-input">Complexidade: <span id="complexity-value">50%</span></label>
-                    <input type="range" id="complexity-input" min="0" max="100" value="50">
-                </div>
-                
-                <div class="control-group">
                     <label for="bars-select">Tamanho</label>
                     <select id="bars-select">
                         <option value="1">1 Compasso</option>
@@ -108,14 +84,53 @@
                     </select>
                 </div>
 
+                <div class="control-group">
+                    <label for="creativity-input">Criatividade: <span id="creativity-value">50%</span></label>
+                    <input type="range" id="creativity-input" min="0" max="100" value="50">
+                </div>
+                <div class="control-group">
+                    <label for="repetition-input">Repetição: <span id="repetition-value">50%</span></label>
+                    <input type="range" id="repetition-input" min="0" max="100" value="50">
+                </div>
+                <div class="control-group">
+                    <label for="complexity-input">Complexidade: <span id="complexity-value">50%</span></label>
+                    <input type="range" id="complexity-input" min="0" max="100" value="50">
+                </div>
+
                 <button id="btn-generate" class="btn-primary">Gerar Melodia Base</button>
             </div>
 
             <hr class="sidebar-divider">
 
             <div class="panel-section">
+                <h2>Harmonia & Baixo</h2>
+                <div class="control-group">
+                    <label for="harmony-mode">Modo de Harmonia</label>
+                    <select id="harmony-mode">
+                        <option value="off">Desligada</option>
+                        <option value="auto">Automática</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="bass-mode">Comportamento do Baixo</label>
+                    <select id="bass-mode">
+                        <option value="off">Desligado</option>
+                        <option value="fundamental">Fundamental</option>
+                        <option value="fundamental_fifth">Fundamental + Quinta</option>
+                        <option value="bassline">Bassline Simples</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Progressão Atual:</label>
+                    <div id="progression-display" class="progression-box">-</div>
+                </div>
+                <button id="btn-regen-harmony" class="btn-secondary" disabled>Regenerar Apenas Harmonia</button>
+            </div>
+
+            <hr class="sidebar-divider">
+
+            <div class="panel-section">
                 <h2>Mutações</h2>
-                
                 <div class="control-group">
                     <label for="mutation-type">Tipo de Mutação</label>
                     <select id="mutation-type">
@@ -131,12 +146,10 @@
                         <option value="transpose">Transpor Tonalidade</option>
                     </select>
                 </div>
-
                 <div class="control-group">
                     <label for="mutation-intensity">Intensidade: <span id="mutation-intensity-value">50%</span></label>
                     <input type="range" id="mutation-intensity" min="0" max="100" value="50">
                 </div>
-
                 <button id="btn-mutate" class="btn-secondary" disabled>Aplicar Mutação</button>
             </div>
         </aside>
