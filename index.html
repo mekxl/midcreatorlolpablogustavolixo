@@ -14,7 +14,7 @@
         
         <header class="app-header">
             <h1>Melody Lab</h1>
-            <span class="version">v0.3.0</span>
+            <span class="version">v0.4.0</span>
         </header>
 
         <aside class="sidebar-config">
@@ -70,19 +70,16 @@
                 <div class="control-group">
                     <label for="creativity-input">Criatividade: <span id="creativity-value">50%</span></label>
                     <input type="range" id="creativity-input" min="0" max="100" value="50">
-                    <small class="help-text">Variação de intervalos e surpresas.</small>
                 </div>
 
                 <div class="control-group">
                     <label for="repetition-input">Repetição: <span id="repetition-value">50%</span></label>
                     <input type="range" id="repetition-input" min="0" max="100" value="50">
-                    <small class="help-text">Retorno de motivos anteriores.</small>
                 </div>
 
                 <div class="control-group">
                     <label for="complexity-input">Complexidade: <span id="complexity-value">50%</span></label>
                     <input type="range" id="complexity-input" min="0" max="100" value="50">
-                    <small class="help-text">Densidade rítmica e de notas.</small>
                 </div>
                 
                 <div class="control-group">
@@ -107,8 +104,32 @@
             </div>
 
             <div class="piano-roll-container">
-                <div id="provisional-view" class="piano-roll-placeholder">
-                    <span>Área reservada para o Piano Roll e visualização de notas MIDI</span>
+                <div class="piano-roll-toolbar">
+                    <div class="toolbar-group">
+                        <label for="pr-snap">Grade:</label>
+                        <select id="pr-snap">
+                            <option value="1.0">1/4</option>
+                            <option value="0.5">1/8</option>
+                            <option value="0.25" selected>1/16</option>
+                        </select>
+                    </div>
+                    <div class="toolbar-group">
+                        <label>Zoom X:</label>
+                        <button id="btn-zoom-x-out" class="btn-toolbar">-</button>
+                        <button id="btn-zoom-x-in" class="btn-toolbar">+</button>
+                    </div>
+                    <div class="toolbar-group">
+                        <label>Zoom Y:</label>
+                        <button id="btn-zoom-y-out" class="btn-toolbar">-</button>
+                        <button id="btn-zoom-y-in" class="btn-toolbar">+</button>
+                    </div>
+                </div>
+                
+                <div class="piano-roll-viewport" id="pr-viewport">
+                    <!-- Sizer invisível para forçar a existência das barras de rolagem nativas -->
+                    <div id="pr-sizer"></div>
+                    <!-- Canvas sticky desenha apenas o que está visível -->
+                    <canvas id="pr-canvas"></canvas>
                 </div>
             </div>
         </main>
@@ -145,7 +166,6 @@
 
     </div>
 
-    <!-- Ponto de entrada do JavaScript -->
     <script type="module" src="js/app.js"></script>
 </body>
 </html>
