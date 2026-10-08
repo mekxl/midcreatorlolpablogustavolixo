@@ -12,6 +12,7 @@
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     padding: var(--spacing-md);
+    flex-shrink: 0;
 }
 
 .info-panel h2 {
@@ -23,7 +24,7 @@
     color: var(--text-muted);
 }
 
-/* Piano Roll Placeholder e Visualização Provisória */
+/* Piano Roll Container e Toolbar */
 .piano-roll-container {
     flex-grow: 1;
     background-color: var(--bg-panel);
@@ -31,51 +32,68 @@
     border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;
-    min-height: 300px;
     position: relative;
-    overflow-y: auto;
-    padding: var(--spacing-md);
+    overflow: hidden;
+    min-height: 400px;
 }
 
-.piano-roll-placeholder {
+.piano-roll-toolbar {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: var(--text-muted);
-    border: 2px dashed var(--border-color);
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius);
-    height: 100%;
-    min-height: 250px;
-}
-
-/* Tabela provisória de notas */
-.melody-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: var(--spacing-md);
-    font-family: monospace;
-    font-size: 12px;
-}
-
-.melody-table th, .melody-table td {
-    border: 1px solid var(--border-color);
-    padding: 8px;
-    text-align: left;
-}
-
-.melody-table th {
+    gap: var(--spacing-lg);
+    padding: var(--spacing-sm) var(--spacing-md);
     background-color: var(--bg-base);
-    color: var(--text-main);
+    border-bottom: 1px solid var(--border-color);
 }
 
-.melody-table tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.02);
+.toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
-.melody-table .rest-row {
+.toolbar-group label {
+    font-size: 12px;
     color: var(--text-muted);
-    font-style: italic;
+}
+
+.toolbar-group select {
+    width: auto;
+    padding: 4px 8px;
+}
+
+.btn-toolbar {
+    background-color: var(--btn-secondary-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.btn-toolbar:hover {
+    background-color: var(--btn-secondary-hover);
+}
+
+/* Scroll Virtual do Piano Roll */
+.piano-roll-viewport {
+    flex-grow: 1;
+    position: relative;
+    overflow: auto;
+    background-color: #1a1a1a;
+}
+
+#pr-sizer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+#pr-canvas {
+    position: sticky;
+    top: 0;
+    left: 0;
+    display: block;
+    cursor: default;
 }
