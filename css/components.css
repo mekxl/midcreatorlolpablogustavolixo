@@ -36,6 +36,20 @@
     color: var(--text-muted);
 }
 
+/* Visor de Progressão Harmônica */
+.progression-box {
+    padding: 8px;
+    background-color: #121212;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-family: monospace;
+    color: var(--accent-hover);
+    text-align: center;
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-top: 4px;
+}
+
 /* Piano Roll Container e Toolbar */
 .piano-roll-container {
     flex-grow: 1;
