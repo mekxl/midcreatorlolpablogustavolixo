@@ -1,12 +1,12 @@
 /**
  * Gerenciador de Persistência Local (LocalStorage).
- * Manipula Presets de configurações e Biblioteca de Ideias (melodias).
+ * Contém presets focados em música eletrônica.
  */
 import { DEFAULT_STATE } from './constants.js';
 
 export const StorageManager = {
-    PRESETS_KEY: 'melody_lab_presets_v1',
-    IDEAS_KEY: 'melody_lab_ideas_v1',
+    PRESETS_KEY: 'melody_lab_presets_v2',
+    IDEAS_KEY: 'melody_lab_ideas_v2',
 
     getPresets() {
         try {
@@ -36,7 +36,6 @@ export const StorageManager = {
     },
 
     deletePreset(id) {
-        // Impede deletar presets padrão (IDs pequenos ou numéricos fixos)
         if (id.startsWith('default_')) return false;
         let presets = this.getPresets().filter(p => p.id !== id);
         localStorage.setItem(this.PRESETS_KEY, JSON.stringify(presets));
@@ -45,10 +44,11 @@ export const StorageManager = {
 
     getDefaultPresets() {
         return [
-            { id: 'default_1', name: 'Melodia Catchy', settings: { ...DEFAULT_STATE, personality: 'catchy', key: 'C', scale: 'major', bpm: 128, bars: 8, creativity: 40, repetition: 80, complexity: 50, harmonyMode: 'auto', bassMode: 'bassline' } },
-            { id: 'default_2', name: 'Dark Cinemática', settings: { ...DEFAULT_STATE, personality: 'cinematic', key: 'D', scale: 'minor_natural', bpm: 90, register: 'low', bars: 16, creativity: 70, repetition: 40, complexity: 60, harmonyMode: 'auto', bassMode: 'fundamental' } },
-            { id: 'default_3', name: 'Minimalista', settings: { ...DEFAULT_STATE, personality: 'minimalist', key: 'A', scale: 'dorian', bpm: 110, bars: 8, creativity: 30, repetition: 90, complexity: 20, harmonyMode: 'off', bassMode: 'off' } },
-            { id: 'default_4', name: 'Alta Energia', settings: { ...DEFAULT_STATE, personality: 'energetic', key: 'E', scale: 'minor_natural', bpm: 140, bars: 8, creativity: 60, repetition: 50, complexity: 80, harmonyMode: 'auto', bassMode: 'fundamental_fifth' } }
+            { id: 'default_1', name: 'EDM Hook (Catchy)', settings: { ...DEFAULT_STATE, personality: 'catchy', key: 'F', scale: 'major', bpm: 128, bars: 4, creativity: 30, repetition: 85, complexity: 40, harmonyMode: 'auto', bassMode: 'offbeat' } },
+            { id: 'default_2', name: 'Dark Synthwave', settings: { ...DEFAULT_STATE, personality: 'dark', key: 'E', scale: 'minor_natural', bpm: 105, register: 'low', bars: 8, creativity: 50, repetition: 60, complexity: 50, harmonyMode: 'auto', bassMode: 'rolling' } },
+            { id: 'default_3', name: 'Melodic Techno', settings: { ...DEFAULT_STATE, personality: 'cinematic', key: 'D', scale: 'dorian', bpm: 124, bars: 16, creativity: 40, repetition: 70, complexity: 60, harmonyMode: 'auto', bassMode: 'rolling' } },
+            { id: 'default_4', name: 'Progressive Trance', settings: { ...DEFAULT_STATE, personality: 'energetic', key: 'A', scale: 'minor_natural', bpm: 138, bars: 8, creativity: 60, repetition: 50, complexity: 80, harmonyMode: 'auto', bassMode: 'rolling' } },
+            { id: 'default_5', name: 'Deep House / Minimal', settings: { ...DEFAULT_STATE, personality: 'minimalist', key: 'G', scale: 'minor_natural', bpm: 122, bars: 4, creativity: 30, repetition: 90, complexity: 30, harmonyMode: 'off', bassMode: 'bassline' } }
         ];
     },
 
