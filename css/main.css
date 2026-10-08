@@ -23,6 +23,9 @@
     --spacing-sm: 8px;
     --spacing-md: 16px;
     --spacing-lg: 24px;
+
+    --transition-fast: 0.15s ease;
+    --transition-smooth: 0.3s ease;
 }
 
 /* Reset Básico */
@@ -45,4 +48,57 @@ body {
 h1, h2, h3 {
     font-weight: 600;
     color: #ffffff;
+}
+
+/* Sistema de Notificações (Toasts) */
+.toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.toast {
+    background-color: var(--bg-panel);
+    color: var(--text-main);
+    padding: 12px 20px;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--accent-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    font-weight: 500;
+    pointer-events: auto;
+    animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+}
+
+.toast.success { border-color: #00e676; }
+.toast.error { border-color: #ff1744; }
+.toast.info { border-color: var(--accent-color); }
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* Scrollbars Personalizadas para Elegância */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
 }
