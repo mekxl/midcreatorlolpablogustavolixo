@@ -14,7 +14,7 @@
         
         <header class="app-header">
             <h1>Melody Lab</h1>
-            <span class="version">v0.4.0</span>
+            <span class="version">v0.5.0</span>
         </header>
 
         <aside class="sidebar-config">
@@ -68,21 +68,6 @@
                 </div>
 
                 <div class="control-group">
-                    <label for="creativity-input">Criatividade: <span id="creativity-value">50%</span></label>
-                    <input type="range" id="creativity-input" min="0" max="100" value="50">
-                </div>
-
-                <div class="control-group">
-                    <label for="repetition-input">Repetição: <span id="repetition-value">50%</span></label>
-                    <input type="range" id="repetition-input" min="0" max="100" value="50">
-                </div>
-
-                <div class="control-group">
-                    <label for="complexity-input">Complexidade: <span id="complexity-value">50%</span></label>
-                    <input type="range" id="complexity-input" min="0" max="100" value="50">
-                </div>
-                
-                <div class="control-group">
                     <label for="bars-select">Tamanho</label>
                     <select id="bars-select">
                         <option value="1">1 Compasso</option>
@@ -93,14 +78,49 @@
                     </select>
                 </div>
 
-                <button id="btn-generate" class="btn-primary">Gerar Melodia</button>
+                <button id="btn-generate" class="btn-primary">Gerar Melodia Base</button>
+            </div>
+
+            <hr class="sidebar-divider">
+
+            <div class="panel-section">
+                <h2>Mutações</h2>
+                
+                <div class="control-group">
+                    <label for="mutation-type">Tipo de Mutação</label>
+                    <select id="mutation-type">
+                        <option value="alter_notes">Alterar Notas</option>
+                        <option value="alter_rhythm">Alterar Ritmo</option>
+                        <option value="alter_end">Alterar Final</option>
+                        <option value="alter_start">Alterar Início</option>
+                        <option value="increase_tension">Aumentar Tensão</option>
+                        <option value="simplify">Simplificar</option>
+                        <option value="increase_complexity">Aumentar Complexidade</option>
+                        <option value="make_catchy">Deixar Mais Marcante</option>
+                        <option value="make_experimental">Deixar Mais Experimental</option>
+                        <option value="transpose">Transpor Tonalidade</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="mutation-intensity">Intensidade: <span id="mutation-intensity-value">50%</span></label>
+                    <input type="range" id="mutation-intensity" min="0" max="100" value="50">
+                </div>
+
+                <button id="btn-mutate" class="btn-secondary" disabled>Aplicar Mutação</button>
             </div>
         </aside>
 
         <main class="main-content">
             <div class="info-panel">
-                <h2>Informações da Melodia</h2>
-                <p id="melody-status">Nenhuma melodia gerada no momento. Ajuste os parâmetros e clique em "Gerar Melodia".</p>
+                <div class="info-header">
+                    <h2>Informações e Histórico</h2>
+                    <div class="history-controls">
+                        <button id="btn-undo" class="btn-toolbar" disabled>Desfazer</button>
+                        <button id="btn-redo" class="btn-toolbar" disabled>Refazer</button>
+                    </div>
+                </div>
+                <p id="melody-status">Nenhuma melodia gerada no momento. Ajuste os parâmetros e clique em "Gerar Melodia Base".</p>
             </div>
 
             <div class="piano-roll-container">
@@ -126,9 +146,7 @@
                 </div>
                 
                 <div class="piano-roll-viewport" id="pr-viewport">
-                    <!-- Sizer invisível para forçar a existência das barras de rolagem nativas -->
                     <div id="pr-sizer"></div>
-                    <!-- Canvas sticky desenha apenas o que está visível -->
                     <canvas id="pr-canvas"></canvas>
                 </div>
             </div>
