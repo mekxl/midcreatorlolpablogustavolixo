@@ -1,6 +1,5 @@
 /**
  * Gerenciador de estado centralizado (State Manager).
- * Inclui sistema de Histórico (Desfazer/Refazer) para suportar mutações.
  */
 import { DEFAULT_STATE } from './constants.js';
 
@@ -8,32 +7,29 @@ class State {
     constructor(initialState = {}) {
         this.state = { ...DEFAULT_STATE, ...initialState };
         this.listeners = [];
-        this.MAX_HISTORY = 20;
+        this.MAX_HISTORY = 30;
     }
 
-    get() {
-        return { ...this.state };
-    }
+    get() { return { ...this.state }; }
 
     set(newState) {
         this.state = { ...this.state, ...newState };
         this.notify();
     }
 
-    // Empurra uma nova versão da melodia para o histórico, deletando futuros se estiver no meio
-    pushHistory(newMelodyData) {
+    pushHistory(newMelodyData, actionName = "Edição") {
         let currentHistory = [...this.state.history];
         
-        // Se o usuário desfez e depois fez uma alteração nova, descarta o futuro
         if (this.state.historyIndex < currentHistory.length - 1) {
             currentHistory = currentHistory.slice(0, this.state.historyIndex + 1);
         }
 
-        // Deep copy para evitar mutações indesejadas por referência
         const clonedData = JSON.parse(JSON.stringify(newMelodyData));
+        clonedData.timestamp = Date.now();
+        clonedData.actionName = actionName;
+
         currentHistory.push(clonedData);
 
-        // Limita o tamanho do histórico
         if (currentHistory.length > this.MAX_HISTORY) {
             currentHistory.shift();
         }
@@ -50,10 +46,7 @@ class State {
         if (this.state.historyIndex > 0) {
             const newIndex = this.state.historyIndex - 1;
             const previousData = JSON.parse(JSON.stringify(this.state.history[newIndex]));
-            this.set({
-                historyIndex: newIndex,
-                melodyData: previousData
-            });
+            this.set({ historyIndex: newIndex, melodyData: previousData });
         }
     }
 
@@ -61,18 +54,13 @@ class State {
         if (this.state.historyIndex < this.state.history.length - 1) {
             const newIndex = this.state.historyIndex + 1;
             const nextData = JSON.parse(JSON.stringify(this.state.history[newIndex]));
-            this.set({
-                historyIndex: newIndex,
-                melodyData: nextData
-            });
+            this.set({ historyIndex: newIndex, melodyData: nextData });
         }
     }
 
     subscribe(listenerFunc) {
         this.listeners.push(listenerFunc);
-        return () => {
-            this.listeners = this.listeners.filter(l => l !== listenerFunc);
-        };
+        return () => { this.listeners = this.listeners.filter(l => l !== listenerFunc); };
     }
 
     notify() {
