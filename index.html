@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melody Lab</title>
+    <meta name="description" content="Melody Lab - Gerador procedural de melodias e ideias para música eletrônica (EDM, Techno, House, Synthwave).">
+    <title>Melody Lab | Electronic Music Generator</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/controls.css">
@@ -14,7 +15,7 @@
         
         <header class="app-header">
             <h1>Melody Lab</h1>
-            <span class="version">v0.8.0</span>
+            <span class="version">v1.0.0 (Electronic Edition)</span>
         </header>
 
         <aside class="sidebar-config">
@@ -24,7 +25,7 @@
                 <div class="panel-section">
                     <h2>Presets</h2>
                     <div class="control-group">
-                        <select id="preset-select">
+                        <select id="preset-select" aria-label="Selecione um preset">
                             <option value="" disabled selected>Carregar preset...</option>
                         </select>
                     </div>
@@ -56,15 +57,15 @@
                     <div class="control-group">
                         <label for="scale-select">Escala</label>
                         <select id="scale-select">
-                            <option value="major">Maior</option>
-                            <option value="minor_natural">Menor Natural</option>
+                            <option value="major">Maior (Trance/Progressive)</option>
+                            <option value="minor_natural">Menor Natural (Techno/EDM)</option>
                             <option value="minor_harmonic">Menor Harmônica</option>
                             <option value="minor_melodic">Menor Melódica</option>
                             <option value="pentatonic_major">Pentatônica Maior</option>
-                            <option value="pentatonic_minor">Pentatônica Menor</option>
+                            <option value="pentatonic_minor">Pentatônica Menor (House)</option>
                             <option value="blues">Blues</option>
-                            <option value="dorian">Dórica</option>
-                            <option value="phrygian">Frígia</option>
+                            <option value="dorian">Dórica (Deep House)</option>
+                            <option value="phrygian">Frígia (Psytrance)</option>
                             <option value="lydian">Lídia</option>
                             <option value="mixolydian">Mixolídia</option>
                             <option value="aeolian">Eólia</option>
@@ -73,12 +74,12 @@
                     </div>
 
                     <div class="control-group">
-                        <label for="bpm-input">Tempo (BPM): <span id="bpm-value">120</span></label>
-                        <input type="range" id="bpm-input" min="60" max="200" value="120">
+                        <label for="bpm-input">Tempo (BPM): <span id="bpm-value">128</span></label>
+                        <input type="range" id="bpm-input" min="60" max="200" value="128">
                     </div>
 
                     <div class="control-group">
-                        <label for="bars-select">Tamanho</label>
+                        <label for="bars-select">Tamanho do Loop</label>
                         <select id="bars-select">
                             <option value="1">1 Compasso</option>
                             <option value="2">2 Compassos</option>
@@ -93,43 +94,46 @@
 
                 <!-- COMPORTAMENTO -->
                 <div class="panel-section">
-                    <h2>Comportamento</h2>
+                    <h2>Comportamento (Groove & Lead)</h2>
 
                     <div class="control-group">
-                        <label for="personality-select">Personalidade</label>
+                        <label for="personality-select">Identidade Musical</label>
                         <select id="personality-select">
                             <option value="neutral">Neutra</option>
-                            <option value="dark">Dark</option>
-                            <option value="emotional">Emocional</option>
-                            <option value="catchy">Catchy</option>
-                            <option value="energetic">Energética</option>
-                            <option value="experimental">Experimental</option>
-                            <option value="cinematic">Cinemática</option>
-                            <option value="minimalist">Minimalista</option>
+                            <option value="dark">Dark Synthwave</option>
+                            <option value="emotional">Melodic Trance</option>
+                            <option value="catchy">EDM Hook</option>
+                            <option value="energetic">Alta Energia</option>
+                            <option value="experimental">IDM / Experimental</option>
+                            <option value="cinematic">Ambient / Cinematic</option>
+                            <option value="minimalist">Minimal Techno</option>
                         </select>
-                        <small id="personality-desc" class="help-text">Comportamento equilibrado.</small>
+                        <small id="personality-desc" class="help-text">Comportamento equilibrado para hooks eletrônicos.</small>
                     </div>
 
                     <div class="control-group">
-                        <label for="register-select">Registro</label>
+                        <label for="register-select">Registro do Lead</label>
                         <select id="register-select">
-                            <option value="low">Baixo</option>
+                            <option value="low">Grave</option>
                             <option value="medium" selected>Médio</option>
-                            <option value="high">Alto</option>
+                            <option value="high">Agudo</option>
                         </select>
                     </div>
 
                     <div class="control-group">
                         <label for="creativity-input">Criatividade: <span id="creativity-value">50</span></label>
                         <input type="range" id="creativity-input" min="0" max="100" value="50">
+                        <small class="help-text">Define o quanto a melodia foge do padrão.</small>
                     </div>
                     <div class="control-group">
                         <label for="repetition-input">Repetição: <span id="repetition-value">50</span></label>
                         <input type="range" id="repetition-input" min="0" max="100" value="50">
+                        <small class="help-text">Controla a força dos motivos e loops.</small>
                     </div>
                     <div class="control-group">
-                        <label for="complexity-input">Complexidade: <span id="complexity-value">50</span></label>
+                        <label for="complexity-input">Complexidade (Densidade): <span id="complexity-value">50</span></label>
                         <input type="range" id="complexity-input" min="0" max="100" value="50">
+                        <small class="help-text">Quantidade de notas rápidas e subdivisões.</small>
                     </div>
                 </div>
 
@@ -137,21 +141,22 @@
 
                 <!-- HARMONIA -->
                 <div class="panel-section">
-                    <h2>Harmonia & Baixo</h2>
+                    <h2>Harmonia & Bassline</h2>
                     <div class="control-group">
                         <label for="harmony-mode">Modo de Harmonia</label>
                         <select id="harmony-mode">
                             <option value="off">Desligada</option>
-                            <option value="auto">Automática</option>
+                            <option value="auto">Progressão Automática</option>
                         </select>
                     </div>
                     <div class="control-group">
-                        <label for="bass-mode">Comportamento do Baixo</label>
+                        <label for="bass-mode">Padrão de Baixo Eletrônico</label>
                         <select id="bass-mode">
                             <option value="off">Desligado</option>
-                            <option value="fundamental">Fundamental</option>
-                            <option value="fundamental_fifth">Fundamental + Quinta</option>
-                            <option value="bassline">Bassline Simples</option>
+                            <option value="fundamental">Pad / Sustentado</option>
+                            <option value="offbeat">Offbeat (House Style)</option>
+                            <option value="rolling">Rolling 16ths (Techno/Psy)</option>
+                            <option value="bassline">Groove (Síncopes)</option>
                         </select>
                     </div>
                     <button id="btn-regen-harmony" class="btn-secondary" disabled>Regenerar Apenas Harmonia</button>
@@ -163,17 +168,17 @@
                 <div class="panel-section">
                     <h2>Transformar Melodia</h2>
                     <div class="control-group">
-                        <label for="mutation-type">Tipo de Modificação</label>
+                        <label for="mutation-type">Técnica de Mutação</label>
                         <select id="mutation-type">
-                            <option value="alter_notes">Alterar Notas</option>
-                            <option value="alter_rhythm">Alterar Ritmo</option>
-                            <option value="alter_end">Alterar Final</option>
-                            <option value="alter_start">Alterar Início</option>
-                            <option value="increase_tension">Aumentar Tensão</option>
-                            <option value="simplify">Simplificar</option>
-                            <option value="increase_complexity">Aumentar Complexidade</option>
-                            <option value="make_catchy">Deixar Mais Marcante</option>
-                            <option value="make_experimental">Deixar Mais Experimental</option>
+                            <option value="alter_notes">Mudar Notas (Preservar Ritmo)</option>
+                            <option value="alter_rhythm">Mudar Ritmo (Síncopes)</option>
+                            <option value="alter_end">Mudar Final (Resolução)</option>
+                            <option value="alter_start">Mudar Início (Hook)</option>
+                            <option value="increase_tension">Aumentar Tensão (Cromatismo)</option>
+                            <option value="simplify">Reduzir Elementos (Simplificar)</option>
+                            <option value="increase_complexity">Dividir Notas (Complexidade)</option>
+                            <option value="make_catchy">Reforçar Motivo (Catchy)</option>
+                            <option value="make_experimental">Injetar Caos Controlado</option>
                             <option value="transpose">Transpor Tonalidade</option>
                         </select>
                     </div>
@@ -181,13 +186,13 @@
                         <label for="mutation-intensity">Intensidade: <span id="mutation-intensity-value">50</span></label>
                         <input type="range" id="mutation-intensity" min="0" max="100" value="50">
                     </div>
-                    <button id="btn-mutate" class="btn-secondary" disabled>Aplicar Modificação</button>
+                    <button id="btn-mutate" class="btn-secondary" disabled>Aplicar Mutação</button>
                 </div>
                 
             </div>
 
             <div class="sidebar-footer">
-                <button id="btn-generate" class="btn-primary">Gerar Melodia</button>
+                <button id="btn-generate" class="btn-primary">GERAR NOVA MELODIA</button>
                 <button id="btn-regenerate" class="btn-secondary">Gerar Novamente</button>
             </div>
         </aside>
@@ -196,14 +201,14 @@
             <div class="dashboard-panel">
                 <div class="dashboard-top">
                     <div class="melody-stats" id="melody-stats">
-                        Aguardando geração...
+                        Projeto pronto. Clique em "Gerar Nova Melodia".
                     </div>
                     <div class="dashboard-actions">
                         <button id="btn-undo" class="btn-control" disabled aria-label="Desfazer">Desfazer</button>
                         <button id="btn-redo" class="btn-control" disabled aria-label="Refazer">Refazer</button>
                         <div class="separator"></div>
-                        <button id="btn-open-history" class="btn-control">Histórico</button>
-                        <button id="btn-open-library" class="btn-control">Biblioteca</button>
+                        <button id="btn-open-history" class="btn-control">Versões</button>
+                        <button id="btn-open-library" class="btn-control">Biblioteca Local</button>
                         <button id="btn-save-idea" class="btn-control" disabled>Salvar Ideia</button>
                     </div>
                 </div>
@@ -213,20 +218,20 @@
             <div class="piano-roll-container">
                 <div class="piano-roll-toolbar">
                     <div class="toolbar-group">
-                        <label for="pr-snap">Grade:</label>
+                        <label for="pr-snap">Grade Visual:</label>
                         <select id="pr-snap">
-                            <option value="1.0">1/4</option>
-                            <option value="0.5">1/8</option>
-                            <option value="0.25" selected>1/16</option>
+                            <option value="1.0">1/4 (Semínima)</option>
+                            <option value="0.5">1/8 (Colcheia)</option>
+                            <option value="0.25" selected>1/16 (Semicolcheia)</option>
                         </select>
                     </div>
                     <div class="toolbar-group">
-                        <label>Zoom X:</label>
+                        <label>Zoom Horizontal:</label>
                         <button id="btn-zoom-x-out" class="btn-toolbar" aria-label="Diminuir Zoom Horizontal">-</button>
                         <button id="btn-zoom-x-in" class="btn-toolbar" aria-label="Aumentar Zoom Horizontal">+</button>
                     </div>
                     <div class="toolbar-group">
-                        <label>Zoom Y:</label>
+                        <label>Zoom Vertical:</label>
                         <button id="btn-zoom-y-out" class="btn-toolbar" aria-label="Diminuir Zoom Vertical">-</button>
                         <button id="btn-zoom-y-in" class="btn-toolbar" aria-label="Aumentar Zoom Vertical">+</button>
                     </div>
@@ -241,31 +246,31 @@
 
         <footer class="bottom-bar">
             <div class="transport-controls">
-                <button id="btn-play" class="btn-control" disabled>Reproduzir</button>
+                <button id="btn-play" class="btn-control btn-play" disabled>Reproduzir</button>
                 <button id="btn-pause" class="btn-control" disabled>Pausar</button>
                 <button id="btn-stop" class="btn-control" disabled>Parar</button>
                 <label class="checkbox-label">
-                    <input type="checkbox" id="check-loop"> Repetir
+                    <input type="checkbox" id="check-loop" checked> Modo Loop
                 </label>
             </div>
             
             <div class="mixer-controls">
                 <div class="mixer-channel">
                     <label class="checkbox-label">
-                        <input type="checkbox" id="check-synth" checked> Synth Saw
+                        <input type="checkbox" id="check-synth" checked> Synth Lead
                     </label>
                     <input type="range" id="vol-synth" min="0" max="100" value="80">
                 </div>
                 <div class="mixer-channel">
                     <label class="checkbox-label">
-                        <input type="checkbox" id="check-bass" checked> Bass
+                        <input type="checkbox" id="check-bass" checked> Synth Bass
                     </label>
-                    <input type="range" id="vol-bass" min="0" max="100" value="40">
+                    <input type="range" id="vol-bass" min="0" max="100" value="50">
                 </div>
             </div>
 
             <div class="export-controls">
-                <button id="btn-export-midi" class="btn-secondary" disabled>Baixar MIDI</button>
+                <button id="btn-export-midi" class="btn-secondary" disabled>Exportar MIDI (Multitrack)</button>
             </div>
         </footer>
 
@@ -286,24 +291,20 @@
     <dialog id="modal-library" class="custom-modal large-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Biblioteca de Ideias</h3>
+                <h3>Biblioteca de Ideias (Local)</h3>
                 <button class="btn-close" id="btn-close-library" aria-label="Fechar">X</button>
             </div>
-            <div class="modal-body" id="library-list">
-                <!-- Injetado dinamicamente -->
-            </div>
+            <div class="modal-body" id="library-list"></div>
         </div>
     </dialog>
 
     <dialog id="modal-history" class="custom-modal large-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Histórico da Sessão Atual</h3>
+                <h3>Versões da Sessão Atual</h3>
                 <button class="btn-close" id="btn-close-history" aria-label="Fechar">X</button>
             </div>
-            <div class="modal-body" id="history-list">
-                <!-- Injetado dinamicamente -->
-            </div>
+            <div class="modal-body" id="history-list"></div>
         </div>
     </dialog>
 
