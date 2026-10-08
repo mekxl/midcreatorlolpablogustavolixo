@@ -33,6 +33,36 @@ select:focus {
     margin-top: 4px;
 }
 
+/* Checkboxes */
+.checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    user-select: none;
+    color: var(--text-main);
+}
+
+/* Mixer Rodapé */
+.mixer-controls {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: center;
+}
+
+.mixer-channel {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 120px;
+}
+
+.mixer-channel input[type="range"] {
+    padding: 0;
+    height: 4px;
+}
+
 /* Estilização de Botões */
 button {
     cursor: pointer;
@@ -72,11 +102,16 @@ button:disabled {
     background-color: var(--btn-secondary-hover);
 }
 
+.transport-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
 .btn-control {
     background-color: var(--btn-secondary-bg);
     color: var(--text-main);
-    min-width: 100px;
-    margin-right: var(--spacing-sm);
+    min-width: 90px;
 }
 
 .btn-control:hover:not(:disabled) {
