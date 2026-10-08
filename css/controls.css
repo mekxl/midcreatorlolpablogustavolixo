@@ -33,6 +33,13 @@ select:focus {
     margin-top: 4px;
 }
 
+/* Divisores */
+.sidebar-divider {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: var(--spacing-lg) 0;
+}
+
 /* Checkboxes */
 .checkbox-label {
     display: inline-flex;
@@ -96,6 +103,7 @@ button:disabled {
 .btn-secondary {
     background-color: var(--btn-secondary-bg);
     color: var(--text-main);
+    width: 100%;
 }
 
 .btn-secondary:hover:not(:disabled) {
