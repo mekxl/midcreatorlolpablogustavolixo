@@ -12,8 +12,18 @@ export const DEFAULT_STATE = {
     repetition: 50,
     complexity: 50,
     bars: 8,
+    
+    // Controles de Áudio
+    volumeSynth: 80,
+    volumeBass: 40,
+    synthEnabled: true,
+    bassEnabled: true,
+    loop: false,
+
+    // Status de Execução
     isGenerating: false,
     isPlaying: false,
+    isPaused: false,
     hasMelody: false,
     melodyData: null
 };
