@@ -1,40 +1,68 @@
 /**
- * Responsável por gerenciar os botões de ação principal e a 
- * visualização provisória da melodia gerada.
+ * Responsável por gerenciar os botões de ação principal, controles 
+ * de áudio e visualização provisória da melodia gerada.
  */
 import { appState } from '../core/state.js';
 import { generateMelody } from '../melody/melodyGenerator.js';
+import { audioEngine } from '../audio/audioEngine.js';
+import { exportToMidi } from '../midi/midiExporter.js';
 
 export function initControls() {
     const btnGenerate = document.getElementById('btn-generate');
     const btnPlay = document.getElementById('btn-play');
+    const btnPause = document.getElementById('btn-pause');
     const btnStop = document.getElementById('btn-stop');
     const btnExportMidi = document.getElementById('btn-export-midi');
     const melodyStatus = document.getElementById('melody-status');
     const provisionalView = document.getElementById('provisional-view');
 
+    // Mixer e Loop
+    const checkLoop = document.getElementById('check-loop');
+    const checkSynth = document.getElementById('check-synth');
+    const volSynth = document.getElementById('vol-synth');
+    const checkBass = document.getElementById('check-bass');
+    const volBass = document.getElementById('vol-bass');
+
     appState.subscribe((state) => {
         if (state.hasMelody) {
-            btnPlay.disabled = state.isPlaying;
+            btnPlay.disabled = state.isPlaying && !state.isPaused;
+            btnPause.disabled = !state.isPlaying || state.isPaused;
             btnStop.disabled = !state.isPlaying;
             btnExportMidi.disabled = false;
         } else {
             btnPlay.disabled = true;
+            btnPause.disabled = true;
             btnStop.disabled = true;
             btnExportMidi.disabled = true;
         }
-        btnGenerate.disabled = state.isGenerating || state.isPlaying;
+        btnGenerate.disabled = state.isGenerating;
+
+        // Feedback de UI sobre a reprodução
+        if (state.isPlaying && !state.isPaused) {
+            melodyStatus.textContent = "Reproduzindo...";
+        } else if (state.isPaused) {
+            melodyStatus.textContent = "Reprodução pausada.";
+        } else if (state.hasMelody && !state.isGenerating) {
+            melodyStatus.textContent = "Pronto.";
+        }
     });
+
+    // Listeners do Mixer e Status
+    checkLoop.addEventListener('change', (e) => appState.set({ loop: e.target.checked }));
+    checkSynth.addEventListener('change', (e) => appState.set({ synthEnabled: e.target.checked }));
+    volSynth.addEventListener('input', (e) => appState.set({ volumeSynth: parseInt(e.target.value, 10) }));
+    checkBass.addEventListener('change', (e) => appState.set({ bassEnabled: e.target.checked }));
+    volBass.addEventListener('input', (e) => appState.set({ volumeBass: parseInt(e.target.value, 10) }));
 
     btnGenerate.addEventListener('click', () => {
         appState.set({ isGenerating: true });
         btnGenerate.textContent = "Gerando...";
         melodyStatus.textContent = "Processando regras procedurais...";
+        
+        audioEngine.stop(); // Interrompe qualquer som rolando
 
         setTimeout(() => {
             const currentState = appState.get();
-            
-            // Invoca o motor de geração de melodias
             const generatedMelody = generateMelody(currentState);
             
             appState.set({ 
@@ -44,32 +72,34 @@ export function initControls() {
             });
 
             btnGenerate.textContent = "Gerar Melodia";
-            melodyStatus.textContent = `Melodia gerada com sucesso! (${generatedMelody.notes.length} eventos em ${currentState.key} ${currentState.scale})`;
-            
             renderProvisionalMelodyView(generatedMelody.notes, provisionalView);
-        }, 300);
+        }, 100);
     });
 
     btnPlay.addEventListener('click', () => {
-        if (!appState.get().hasMelody) return;
-        appState.set({ isPlaying: true });
-        melodyStatus.textContent = "Reproduzindo... (Áudio será implementado em breve)";
+        const state = appState.get();
+        if (!state.hasMelody) return;
         
-        setTimeout(() => {
-            if (appState.get().isPlaying) {
-                appState.set({ isPlaying: false });
-                melodyStatus.textContent = "Pronto.";
-            }
-        }, 2000);
+        if (state.isPaused) {
+            audioEngine.resume();
+        } else {
+            audioEngine.play(state.melodyData);
+        }
+    });
+
+    btnPause.addEventListener('click', () => {
+        audioEngine.pause();
     });
 
     btnStop.addEventListener('click', () => {
-        appState.set({ isPlaying: false });
-        melodyStatus.textContent = "Reprodução interrompida.";
+        audioEngine.stop();
     });
 
     btnExportMidi.addEventListener('click', () => {
-        alert("Sistema de exportação MIDI será implementado no próximo passo.");
+        const state = appState.get();
+        if (state.hasMelody && state.melodyData) {
+            exportToMidi(state.melodyData);
+        }
     });
 }
 
@@ -110,8 +140,6 @@ function renderProvisionalMelodyView(notes, container) {
 
     html += `</tbody></table>`;
     container.innerHTML = html;
-    
-    // Altera estilos em linha para adaptar o scroll da tabela
     container.style.border = "none";
     container.style.justifyContent = "flex-start";
 }
