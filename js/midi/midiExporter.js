@@ -1,9 +1,8 @@
 /**
- * Motor de Exportação MIDI Binária.
- * Gera um arquivo '.mid' válido em Formato 1 nativamente, sem dependências externas.
+ * Exportador Binário MIDI Nativo.
+ * Agora suporta Multitrack: Track 1 (Melodia), Track 2 (Baixo), Track 3 (Harmonia).
  */
 
-// Converte um número em array de bytes de tamanho fixo
 function toBytes(num, bytesCount) {
     const bytes = [];
     for (let i = bytesCount - 1; i >= 0; i--) {
@@ -12,7 +11,6 @@ function toBytes(num, bytesCount) {
     return bytes;
 }
 
-// Converte um número para Variable Length Quantity (VLQ) - padrão do MIDI para deltas temporais
 function toVlq(val) {
     let buffer = [val & 0x7F];
     while (val >>= 7) {
@@ -21,38 +19,45 @@ function toVlq(val) {
     return buffer;
 }
 
-export function exportToMidi(melodyData) {
+export function exportToMidi(melodyData, state) {
     const ticksPerBeat = 480;
     
-    // Header Chunk (MThd)
+    let tracksCount = 1;
+    if (state.bassMode !== 'off' && melodyData.bassNotes && melodyData.bassNotes.length > 0) tracksCount++;
+    if (state.harmonyMode !== 'off' && melodyData.chords && melodyData.chords.length > 0) tracksCount++;
+
     const headerChunk = [
-        ...[0x4D, 0x54, 0x68, 0x64], // 'MThd'
-        ...toBytes(6, 4),            // Length
-        ...toBytes(1, 2),            // Format 1 (Multi-track)
-        ...toBytes(2, 2),            // Tracks count (1 Melody + 1 Bass)
-        ...toBytes(ticksPerBeat, 2)  // Ticks per quarter note
+        ...[0x4D, 0x54, 0x68, 0x64], 
+        ...toBytes(6, 4),            
+        ...toBytes(1, 2),            
+        ...toBytes(tracksCount, 2),  
+        ...toBytes(ticksPerBeat, 2)  
     ];
 
-    function createTrackChunk(eventsArr, channel) {
+    function createTrackChunk(eventsArr, channel, isChordStructure = false) {
         const events = [];
-        
-        // Evento de Tempo no início de cada track
         const microsecondsPerBeat = Math.floor(60000000 / melodyData.tempo);
         events.push({ tick: 0, bytes: [0xFF, 0x51, 0x03, ...toBytes(microsecondsPerBeat, 3)] });
 
-        // Compila Notas
-        eventsArr.forEach(note => {
-            if (note.isRest) return;
-            const startTick = Math.floor(note.startTime * ticksPerBeat);
-            const endTick = Math.floor((note.startTime + note.duration) * ticksPerBeat);
-            
-            // Note On
-            events.push({ tick: startTick, bytes: [0x90 | channel, note.midi, note.velocity] });
-            // Note Off
-            events.push({ tick: endTick, bytes: [0x80 | channel, note.midi, 0x00] });
-        });
+        if (isChordStructure) {
+            eventsArr.forEach(chord => {
+                const startTick = Math.floor(chord.startTime * ticksPerBeat);
+                const endTick = Math.floor((chord.startTime + chord.duration) * ticksPerBeat);
+                chord.notes.forEach(noteMidi => {
+                    events.push({ tick: startTick, bytes: [0x90 | channel, noteMidi, 70] });
+                    events.push({ tick: endTick, bytes: [0x80 | channel, noteMidi, 0x00] });
+                });
+            });
+        } else {
+            eventsArr.forEach(note => {
+                if (note.isRest) return;
+                const startTick = Math.floor(note.startTime * ticksPerBeat);
+                const endTick = Math.floor((note.startTime + note.duration) * ticksPerBeat);
+                events.push({ tick: startTick, bytes: [0x90 | channel, note.midi, note.velocity] });
+                events.push({ tick: endTick, bytes: [0x80 | channel, note.midi, 0x00] });
+            });
+        }
 
-        // Ordena por tick
         events.sort((a, b) => a.tick - b.tick);
 
         const trackData = [];
@@ -65,25 +70,32 @@ export function exportToMidi(melodyData) {
             currentTick = ev.tick;
         });
 
-        // End of Track
         trackData.push(...toVlq(0), 0xFF, 0x2F, 0x00);
 
         return [
-            ...[0x4D, 0x54, 0x72, 0x6B], // 'MTrk'
+            ...[0x4D, 0x54, 0x72, 0x6B], 
             ...toBytes(trackData.length, 4),
             ...trackData
         ];
     }
 
-    const melodyTrack = createTrackChunk(melodyData.notes, 0); // Canal 0
-    const bassTrack = createTrackChunk(melodyData.bassNotes, 1); // Canal 1
-
-    const finalMidiArray = new Uint8Array([...headerChunk, ...melodyTrack, ...bassTrack]);
+    let finalMidiArray = [...headerChunk];
     
-    // Força o Download
-    const blob = new Blob([finalMidiArray], { type: 'audio/midi' });
+    // Adiciona Track Melodia
+    finalMidiArray.push(...createTrackChunk(melodyData.notes, 0));
+    
+    // Adiciona Track Baixo se ativo
+    if (state.bassMode !== 'off' && melodyData.bassNotes && melodyData.bassNotes.length > 0) {
+        finalMidiArray.push(...createTrackChunk(melodyData.bassNotes, 1));
+    }
+    
+    // Adiciona Track Acordes se ativo
+    if (state.harmonyMode !== 'off' && melodyData.chords && melodyData.chords.length > 0) {
+        finalMidiArray.push(...createTrackChunk(melodyData.chords, 2, true));
+    }
+    
+    const blob = new Blob([new Uint8Array(finalMidiArray)], { type: 'audio/midi' });
     const url = URL.createObjectURL(blob);
-    
     const a = document.createElement('a');
     a.href = url;
     a.download = `melody-lab-${melodyData.key}-${melodyData.scale}-${melodyData.tempo}bpm.mid`;
