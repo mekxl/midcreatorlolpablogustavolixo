@@ -14,7 +14,7 @@
         
         <header class="app-header">
             <h1>Melody Lab</h1>
-            <span class="version">v0.2.0</span>
+            <span class="version">v0.3.0</span>
         </header>
 
         <aside class="sidebar-config">
@@ -116,10 +116,30 @@
         <footer class="bottom-bar">
             <div class="transport-controls">
                 <button id="btn-play" class="btn-control" disabled>Reproduzir</button>
+                <button id="btn-pause" class="btn-control" disabled>Pausar</button>
                 <button id="btn-stop" class="btn-control" disabled>Parar</button>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="check-loop"> Repetir
+                </label>
             </div>
+            
+            <div class="mixer-controls">
+                <div class="mixer-channel">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="check-synth" checked> Synth Saw
+                    </label>
+                    <input type="range" id="vol-synth" min="0" max="100" value="80">
+                </div>
+                <div class="mixer-channel">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="check-bass" checked> Bass
+                    </label>
+                    <input type="range" id="vol-bass" min="0" max="100" value="40">
+                </div>
+            </div>
+
             <div class="export-controls">
-                <button id="btn-export-midi" class="btn-secondary" disabled>Exportar MIDI</button>
+                <button id="btn-export-midi" class="btn-secondary" disabled>Baixar MIDI</button>
             </div>
         </footer>
 
