@@ -1,6 +1,6 @@
 /**
  * Responsável por gerenciar os botões de ação principal, controles 
- * de áudio e visualização provisória da melodia gerada.
+ * de áudio e atalhos globais de teclado.
  */
 import { appState } from '../core/state.js';
 import { generateMelody } from '../melody/melodyGenerator.js';
@@ -14,7 +14,6 @@ export function initControls() {
     const btnStop = document.getElementById('btn-stop');
     const btnExportMidi = document.getElementById('btn-export-midi');
     const melodyStatus = document.getElementById('melody-status');
-    const provisionalView = document.getElementById('provisional-view');
 
     // Mixer e Loop
     const checkLoop = document.getElementById('check-loop');
@@ -43,11 +42,10 @@ export function initControls() {
         } else if (state.isPaused) {
             melodyStatus.textContent = "Reprodução pausada.";
         } else if (state.hasMelody && !state.isGenerating) {
-            melodyStatus.textContent = "Pronto.";
+            melodyStatus.textContent = "Pronto para edição.";
         }
     });
 
-    // Listeners do Mixer e Status
     checkLoop.addEventListener('change', (e) => appState.set({ loop: e.target.checked }));
     checkSynth.addEventListener('change', (e) => appState.set({ synthEnabled: e.target.checked }));
     volSynth.addEventListener('input', (e) => appState.set({ volumeSynth: parseInt(e.target.value, 10) }));
@@ -59,7 +57,7 @@ export function initControls() {
         btnGenerate.textContent = "Gerando...";
         melodyStatus.textContent = "Processando regras procedurais...";
         
-        audioEngine.stop(); // Interrompe qualquer som rolando
+        audioEngine.stop(); 
 
         setTimeout(() => {
             const currentState = appState.get();
@@ -72,14 +70,25 @@ export function initControls() {
             });
 
             btnGenerate.textContent = "Gerar Melodia";
-            renderProvisionalMelodyView(generatedMelody.notes, provisionalView);
         }, 100);
     });
+
+    const togglePlay = () => {
+        const state = appState.get();
+        if (!state.hasMelody) return;
+        
+        if (state.isPlaying && !state.isPaused) {
+            audioEngine.pause();
+        } else if (state.isPaused) {
+            audioEngine.resume();
+        } else {
+            audioEngine.play(state.melodyData);
+        }
+    };
 
     btnPlay.addEventListener('click', () => {
         const state = appState.get();
         if (!state.hasMelody) return;
-        
         if (state.isPaused) {
             audioEngine.resume();
         } else {
@@ -101,45 +110,15 @@ export function initControls() {
             exportToMidi(state.melodyData);
         }
     });
-}
 
-function renderProvisionalMelodyView(notes, container) {
-    if (!notes || notes.length === 0) return;
+    // Atalho Global: Espaço = Play/Pause
+    document.addEventListener('keydown', (e) => {
+        const tag = e.target.tagName;
+        if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
 
-    let html = `<table class="melody-table">
-        <thead>
-            <tr>
-                <th>Tempo</th>
-                <th>Nota</th>
-                <th>MIDI</th>
-                <th>Duração</th>
-                <th>Tipo</th>
-            </tr>
-        </thead>
-        <tbody>`;
-
-    notes.forEach(note => {
-        if (note.isRest) {
-            html += `<tr class="rest-row">
-                <td>${note.startTime.toFixed(2)}</td>
-                <td>Pausa</td>
-                <td>-</td>
-                <td>${note.duration.toFixed(2)}</td>
-                <td>Pausa</td>
-            </tr>`;
-        } else {
-            html += `<tr>
-                <td>${note.startTime.toFixed(2)}</td>
-                <td><strong>${note.noteName}</strong></td>
-                <td>${note.midi}</td>
-                <td>${note.duration.toFixed(2)}</td>
-                <td>Nota</td>
-            </tr>`;
+        if (e.code === 'Space') {
+            e.preventDefault(); // Evita scroll da página
+            togglePlay();
         }
     });
-
-    html += `</tbody></table>`;
-    container.innerHTML = html;
-    container.style.border = "none";
-    container.style.justifyContent = "flex-start";
 }
