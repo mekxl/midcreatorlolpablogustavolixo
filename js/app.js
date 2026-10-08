@@ -6,6 +6,9 @@ import { initGeneratorUI } from './ui/generatorUI.js';
 import { initControls } from './ui/controls.js';
 import { runMusicTests } from './music/tests.js';
 
+// Inicializa a instância para ativar o loop do Canvas no carregamento
+import './ui/pianoRoll.js'; 
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Iniciando Melody Lab...");
 
