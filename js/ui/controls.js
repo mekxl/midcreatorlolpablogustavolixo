@@ -1,8 +1,9 @@
 /**
- * Responsável por gerenciar os botões de ação principal:
- * Geração, Play, Stop e Exportação.
+ * Responsável por gerenciar os botões de ação principal e a 
+ * visualização provisória da melodia gerada.
  */
 import { appState } from '../core/state.js';
+import { generateMelody } from '../melody/melodyGenerator.js';
 
 export function initControls() {
     const btnGenerate = document.getElementById('btn-generate');
@@ -10,8 +11,8 @@ export function initControls() {
     const btnStop = document.getElementById('btn-stop');
     const btnExportMidi = document.getElementById('btn-export-midi');
     const melodyStatus = document.getElementById('melody-status');
+    const provisionalView = document.getElementById('provisional-view');
 
-    // Inscreve a UI nos eventos de mudança de estado para ativar/desativar botões
     appState.subscribe((state) => {
         if (state.hasMelody) {
             btnPlay.disabled = state.isPlaying;
@@ -22,60 +23,95 @@ export function initControls() {
             btnStop.disabled = true;
             btnExportMidi.disabled = true;
         }
-
         btnGenerate.disabled = state.isGenerating || state.isPlaying;
     });
 
-    // Ação do Botão Gerar (Placeholder para o fluxo futuro)
     btnGenerate.addEventListener('click', () => {
         appState.set({ isGenerating: true });
-        
         btnGenerate.textContent = "Gerando...";
-        melodyStatus.textContent = "Processando parâmetros musicais...";
+        melodyStatus.textContent = "Processando regras procedurais...";
 
-        // Simula o tempo de geração de uma melodia
         setTimeout(() => {
             const currentState = appState.get();
             
-            // Aqui futuramente chamaremos o melodyGenerator.js
+            // Invoca o motor de geração de melodias
+            const generatedMelody = generateMelody(currentState);
             
             appState.set({ 
                 isGenerating: false, 
                 hasMelody: true,
-                // Simulando payload de dados da melodia gerada
-                melodyData: { notas: [], compassos: currentState.bars } 
+                melodyData: generatedMelody 
             });
 
             btnGenerate.textContent = "Gerar Melodia";
-            melodyStatus.textContent = `Melodia gerada com sucesso! (${currentState.bars} compassos em ${currentState.key} ${currentState.scale})`;
-        }, 800);
+            melodyStatus.textContent = `Melodia gerada com sucesso! (${generatedMelody.notes.length} eventos em ${currentState.key} ${currentState.scale})`;
+            
+            renderProvisionalMelodyView(generatedMelody.notes, provisionalView);
+        }, 300);
     });
 
-    // Ação de Play
     btnPlay.addEventListener('click', () => {
         if (!appState.get().hasMelody) return;
-        
         appState.set({ isPlaying: true });
-        melodyStatus.textContent = "Reproduzindo...";
+        melodyStatus.textContent = "Reproduzindo... (Áudio será implementado em breve)";
         
-        // Simulação: Pára automaticamente após 3 segundos
-        // Futuramente isso será controlado pelo audioEngine.js
         setTimeout(() => {
             if (appState.get().isPlaying) {
                 appState.set({ isPlaying: false });
-                melodyStatus.textContent = "Reprodução finalizada.";
+                melodyStatus.textContent = "Pronto.";
             }
-        }, 3000);
+        }, 2000);
     });
 
-    // Ação de Stop
     btnStop.addEventListener('click', () => {
         appState.set({ isPlaying: false });
         melodyStatus.textContent = "Reprodução interrompida.";
     });
 
-    // Ação de Exportar
     btnExportMidi.addEventListener('click', () => {
-        alert("Sistema de exportação MIDI será implementado em breve.");
+        alert("Sistema de exportação MIDI será implementado no próximo passo.");
     });
+}
+
+function renderProvisionalMelodyView(notes, container) {
+    if (!notes || notes.length === 0) return;
+
+    let html = `<table class="melody-table">
+        <thead>
+            <tr>
+                <th>Tempo</th>
+                <th>Nota</th>
+                <th>MIDI</th>
+                <th>Duração</th>
+                <th>Tipo</th>
+            </tr>
+        </thead>
+        <tbody>`;
+
+    notes.forEach(note => {
+        if (note.isRest) {
+            html += `<tr class="rest-row">
+                <td>${note.startTime.toFixed(2)}</td>
+                <td>Pausa</td>
+                <td>-</td>
+                <td>${note.duration.toFixed(2)}</td>
+                <td>Pausa</td>
+            </tr>`;
+        } else {
+            html += `<tr>
+                <td>${note.startTime.toFixed(2)}</td>
+                <td><strong>${note.noteName}</strong></td>
+                <td>${note.midi}</td>
+                <td>${note.duration.toFixed(2)}</td>
+                <td>Nota</td>
+            </tr>`;
+        }
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+    
+    // Altera estilos em linha para adaptar o scroll da tabela
+    container.style.border = "none";
+    container.style.justifyContent = "flex-start";
 }
