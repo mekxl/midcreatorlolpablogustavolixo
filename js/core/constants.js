@@ -8,10 +8,10 @@ export const DEFAULT_STATE = {
     scale: 'major',
     bpm: 120,
     register: 'medium',
-    creativity: 50,
-    repetition: 50,
-    complexity: 50,
     bars: 8,
+    
+    // Parâmetros de Mutação
+    mutationIntensity: 50,
     
     // Controles de Áudio
     volumeSynth: 80,
@@ -25,5 +25,9 @@ export const DEFAULT_STATE = {
     isPlaying: false,
     isPaused: false,
     hasMelody: false,
-    melodyData: null
+    
+    // Dados Musicais e Histórico
+    melodyData: null,
+    history: [],
+    historyIndex: -1
 };
